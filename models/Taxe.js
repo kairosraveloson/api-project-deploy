@@ -2,12 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  categorieid: {
+  taxid: {
     type: String,
     required: true,
   },
-  categorietitle: {
+  taxtitle: {
     type: String,
+    required: true,
+  },
+  taxrate: {
+    type: Number,
     required: true,
   },
   Date_creation: {
@@ -16,5 +20,5 @@ const userSchema = new Schema({
   },
 });
 
-const Categorie = mongoose.model("Categorie", userSchema);
-module.exports = { Categorie };
+const Tax = mongoose.model("taxe", userSchema);
+module.exports = { Tax };

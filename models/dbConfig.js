@@ -1,6 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 const mongoose = require ('mongoose');
 const url = "mongodb+srv://Kairosraveloson:Kairosforever++@kairosdbcluster.0xmi0re.mongodb.net/Uber-eats" //process.env.MONGO_URI;
+//const url = process.env.MONGO_URI;
+
 /*
 MongoClient.connect(url, function(err, db) { //Creation de la base de données et des tables
     if (err) throw err;
