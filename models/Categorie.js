@@ -10,6 +10,9 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  categoriedescription: {
+    type: String,
+  },
   Date_creation: {
     type: Date,
     default: Date(),
