@@ -1345,10 +1345,10 @@ router.delete("/customer/delete/:tags/:id", (req, res) => {
  *                      example: "CAT001"
  *                  categorietitle:
  *                      type: string
- *                      example: "Autres"
+ *                      example: ""
  *                  categoriedescription:
  *                      type: string
- *                      example: "Autres"
+ *                      example: ""
  *      responses:
  *          '200':
  *              description: New category created successfully !!!
