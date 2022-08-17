@@ -1346,6 +1346,9 @@ router.delete("/customer/delete/:tags/:id", (req, res) => {
  *                  categorietitle:
  *                      type: string
  *                      example: "Autres"
+ *                  categoriedescription:
+ *                      type: string
+ *                      example: "Autres"
  *      responses:
  *          '200':
  *              description: New category created successfully !!!
@@ -1358,6 +1361,7 @@ router.post("/category/add", (req, res) => {
   const newRecord = new Categorie({
     categorieid: req.body.categorieid,
     categorietitle: req.body.categorietitle,
+    categoriedescription: req.body.categoriedescription,
   });
 
   newRecord.save((err, docs) => {
@@ -1458,6 +1462,9 @@ router.get("/category/:tags/:id", (req, res) => {
  *                  categorietitle:
  *                      type: string
  *                      example: ""
+ *                  categoriedescription:
+ *                      type: string
+ *                      example: ""
  *      responses:
  *          '200':
  *              description: Information updated successfully !!!
@@ -1471,6 +1478,7 @@ router.put("/category/update/:tags/:mail", (req, res) => {
 
   const updateRecord = {
     categorietitle: req.body.categorietitle,
+    categoriedescription: req.body.categoriedescription,
   };
 
   Categorie.findOneAndUpdate(
