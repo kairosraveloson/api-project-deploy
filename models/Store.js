@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const storeSchema = new Schema({
   //Database name
-  storeID: String,
+  storeid: String,
   name: String,
   location: {
     address: String,
