@@ -24,7 +24,7 @@ router.get("/api-docs", function (err, res) {
 
 router.get("/news", (req, res) => {
   //Select all users: OK
-  New.find((err, docs) => {
+  New.find({}, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
