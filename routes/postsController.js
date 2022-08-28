@@ -11,6 +11,7 @@ const { Categorie } = require("../models/Categorie");
 const { Tax } = require("../models/Taxe");
 const { Item } = require("../models/Item");
 const { Table } = require("../models/Table");
+const { New } = require("../models/New");
 
 router.get("/", function (err, res) {
   res.redirect("/eats-api");
@@ -18,6 +19,15 @@ router.get("/", function (err, res) {
 
 router.get("/api-docs", function (err, res) {
   res.redirect("/eats-api");
+});
+
+
+router.get("/news", (req, res) => {
+  //Select all users: OK
+  New.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
 });
 
 //Routes
