@@ -9,7 +9,7 @@ require("./models/dbConfig");
 const postsRoutes = require("./routes/postsController");
 const bodyParser = require("body-parser");
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:4000"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:4000","https://eats-project-front-store.vercel.app/"];
 app.use(
   cors({
     origin: function (origin, callback) {
