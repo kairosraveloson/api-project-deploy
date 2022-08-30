@@ -26,7 +26,7 @@ router.get("/api-docs", function (err, res) {
 /********************************************************* PROVISOIRE ****************************************************/
 router.get("/order", (req, res) => {
   //Select all users: OK
-  Order.find({}, { _id: 0 }, (err, docs) => {
+  Order.find({ Current_state: 'Created' }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
