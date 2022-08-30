@@ -11,7 +11,9 @@ const { Categorie } = require("../models/Categorie");
 const { Tax } = require("../models/Taxe");
 const { Item } = require("../models/Item");
 const { Table } = require("../models/Table");
-const { New } = require("../models/New");
+const { Order_detail } = require("../models/Order_detail");
+
+const { Order } = require("../models/Order");
 
 router.get("/", function (err, res) {
   res.redirect("/eats-api");
@@ -21,15 +23,25 @@ router.get("/api-docs", function (err, res) {
   res.redirect("/eats-api");
 });
 
-
-router.get("/news", (req, res) => {
+/********************************************************* PROVISOIRE ****************************************************/
+router.get("/order", (req, res) => {
   //Select all users: OK
-  New.find({}, { _id: 0 }, (err, docs) => {
+  Order.find({}, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
+router.get("/order/:id", (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query["Order_id"] = req.params.id;
+  Order.find(query, { items_information: 1, _id: 0 }, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+/********************************************************* PROVISOIRE ****************************************************/
 //Routes
 /**
  * @swagger
@@ -2058,7 +2070,7 @@ router.post("/item/add", (req, res) => {
  */
 router.get("/item", (req, res) => {
   //Select all categories: OK
-  Item.find({ item_type: "Simple" }, (err, docs) => {
+  Item.find((err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
@@ -2097,6 +2109,16 @@ router.get("/item/:tags/:id", (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Item.find(query, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+router.get("/item/image_url", (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Item.find({}, { image_url: 1, itemid: 1 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
