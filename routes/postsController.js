@@ -24,11 +24,39 @@ router.get("/api-docs", function (err, res) {
 });
 
 /********************************************************* PROVISOIRE ****************************************************/
-router.get("/order", (req, res) => {
+router.get("/order/created", (req, res) => {
   //Select all users: OK
-  Order.find({ Current_state: 'Created' }, { _id: 0 }, (err, docs) => {
+  Order.find({ Current_state: "Created" }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+router.get("/order/accepted", (req, res) => {
+  //Select all users: OK
+  Order.find({ Current_state: "Accepted" }, { _id: 0 }, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+router.get("/order/finished", (req, res) => {
+  //Select all users: OK
+  Order.find({ Current_state: "Finished" }, { _id: 0 }, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+router.delete("/order/delete/:id", (req, res) => {
+  // Delete : Ok
+  let query = {};
+  query["Order_Id"] = req.params.id;
+  Order.delete(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The user with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
+    );
   });
 });
 
@@ -41,6 +69,60 @@ router.get("/order/:id", (req, res) => {
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
+
+/**
+ * @swagger
+ * /order/OrderState/{id}:
+ *    put:
+ *      tags: [Table]
+ *      summary: Update an admin
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["Order_id"]
+ *            required: true
+ *          - name: id
+ *            description: ID or name of the table
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove all fields that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  Current_state:
+ *                      type: string
+ *                      example: "Accepted"
+ *      responses:
+ *          '200':
+ *              description: Information updated successfully !!!
+ */
+router.put("/order/Orderstate/:mail", (req, res) => {
+  // Update : De mbola très bien koa
+
+  let query = {};
+  query["Order_id"] = req.params.mail;
+
+  const updateRecord = {
+    Current_state: req.body.Current_state,
+  };
+
+  Order.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log("Update error : " + err);
+    }
+  );
+});
+
 /********************************************************* PROVISOIRE ****************************************************/
 //Routes
 /**
