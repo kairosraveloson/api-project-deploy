@@ -8,7 +8,7 @@ var cors = require("cors");
 require("./models/dbConfig");
 const postsRoutes = require("./routes/postsController");
 const bodyParser = require("body-parser");
-app.use(cors();
+app.use(cors());
 /*
 const allowedOrigins = ["http://localhost:3000", "http://localhost:4000","https://eats-project-front-store.vercel.app","https://eats-api-project.herokuapp.com"];
 app.use(
