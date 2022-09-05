@@ -8,7 +8,8 @@ var cors = require("cors");
 require("./models/dbConfig");
 const postsRoutes = require("./routes/postsController");
 const bodyParser = require("body-parser");
-
+app.use(cors();
+/*
 const allowedOrigins = ["http://localhost:3000", "http://localhost:4000","https://eats-project-front-store.vercel.app","https://eats-api-project.herokuapp.com"];
 app.use(
   cors({
@@ -24,7 +25,7 @@ app.use(
     },
   })
 );
-
+*/
 app.use(bodyParser.json());
 app.use("/", postsRoutes); // Ce middleware surveille que cette fonction se déclenche seulement quand on est sur la racine + le chemin donné
 
