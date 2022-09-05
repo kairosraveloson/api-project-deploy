@@ -753,6 +753,15 @@ router.delete("/admin/delete/:tags/:id", (req, res) => {
  *                      items:
  *                          type: string
  *                          example: supermarket@outlook.fr
+ *                  wifi:
+ *                      type: object
+ *                      properties:
+ *                         network:
+ *                             type: String
+ *                             example: "123"
+ *                         password:
+ *                             type: String
+ *                             example: "123"
  *                  raw_hero_url:
  *                       type: String
  *                       example: ""
