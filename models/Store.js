@@ -17,6 +17,7 @@ const storeSchema = new Schema({
     longitude: String,
   },
   contact_emails: Array,
+  wifi: Array,
   raw_hero_url: String,
   price_bucket: String,
   avg_prep_time: String,
