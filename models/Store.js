@@ -17,7 +17,10 @@ const storeSchema = new Schema({
     longitude: String,
   },
   contact_emails: Array,
-  wifi: Array,
+ wifi: {
+    network: String,
+    password: String,
+  },
   raw_hero_url: String,
   price_bucket: String,
   avg_prep_time: String,
