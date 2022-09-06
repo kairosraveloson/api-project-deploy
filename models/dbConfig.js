@@ -1,7 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
-const url = process.env.MONGO_URI;
-("mongodb+srv://Kairosraveloson:Kairosforever++@kairosdbcluster.0xmi0re.mongodb.net/Uber-eats"); //process.env.MONGO_URI;
+const url = 
+"mongodb+srv://Kairosraveloson:Kairosforever++@kairosdbcluster.0xmi0re.mongodb.net/Uber-eats"; //process.env.MONGO_URI;
 
 mongoose.connect(
   url,
