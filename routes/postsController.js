@@ -2962,8 +2962,11 @@ router.get("/order_details/list", (req, res) => {
  *                      type: string
  *                      example: "ST001"
  *                  current_state:
- *                      type: boolean
- *                      example: false
+ *                      type: string
+ *                      example: "Created"
+ *                  rating:
+ *                      type: string
+ *                      example: "8.2"
  *                  store:
  *                      type: object
  *                      properties:
@@ -3296,6 +3299,7 @@ router.post("/order_details/add", (req, res) => {
     external_reference_id: req.body.external_reference_id,
     number: req.body.number,
     current_state: req.body.current_state,
+    rating: req.body.rating,
     store: req.body.store,
     eater: req.body.eater,
     eaters: req.body.eaters,
@@ -3307,6 +3311,444 @@ router.post("/order_details/add", (req, res) => {
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error sending new data : " + err);
+  });
+});
+
+/**
+ * @swagger
+ * /order_details/update/{Field value}/{id}:
+ *    put:
+ *      tags: [Order]
+ *      summary: Update an Order
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["id"]
+ *            required: true
+ *          - name: id
+ *            description: ID of the Order
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove all fields that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      example: "01"
+ *                  display_id:
+ *                      type: string
+ *                      example: "Rancard"
+ *                  external_reference_id:
+ *                      type: string
+ *                      example: "4"
+ *                  number:
+ *                      type: string
+ *                      example: "ST001"
+ *                  current_state:
+ *                      type: string
+ *                      example: "Created"
+ *                  rating:
+ *                      type: string
+ *                      example: "8.2"
+ *                  store:
+ *                      type: object
+ *                      properties:
+ *                          id:
+ *                              type: string
+ *                              example: "10"
+ *                          name:
+ *                              type: string
+ *                              example: "12"
+ *                          store_id:
+ *                              type: string
+ *                              example: "00:00"
+ *                          partner_table_id:
+ *                              type: string
+ *                              example: "10"
+ *                          venue_order_id:
+ *                              type: string
+ *                              example: "12"
+ *                          number_of_Guest_id:
+ *                              type: string
+ *                              example: "00:00"
+ *                          external_reference_id:
+ *                              type: string
+ *                              example: "00:00"
+ *                          integrator_store_id:
+ *                              type: string
+ *                              example: "10"
+ *                          integrator_brand_id:
+ *                              type: string
+ *                              example: "12"
+ *                          merchant_store_id:
+ *                              type: string
+ *                              example: "00:00"
+ *                  eater:
+ *                      type: object
+ *                      properties:
+ *                          first_name:
+ *                              type: string
+ *                              example: "10"
+ *                          phone:
+ *                              type: string
+ *                              example: "12"
+ *                          phone_code:
+ *                              type: string
+ *                              example: "00:00"
+ *                  eaters:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                              id:
+ *                                  type: string
+ *                                  example: "IT001"
+ *                              first_name:
+ *                                  type: string
+ *                                  example: "1"
+ *                  cart:
+ *                      type: object
+ *                      properties:
+ *                          items_list:
+ *                              type: array
+ *                              items:
+ *                                  type: object
+ *                                  properties:
+ *                                      id:
+ *                                          type: string
+ *                                          example: "IT001"
+ *                                      instance_id:
+ *                                          type: string
+ *                                          example: "1"
+ *                                      title:
+ *                                          type: string
+ *                                          example: "IT001"
+ *                                      external_data:
+ *                                          type: string
+ *                                          example: "1"
+ *                                      quantity:
+ *                                          type: string
+ *                                          example: "1"
+ *                                      price:
+ *                                          type: object
+ *                                          properties:
+ *                                              unit_price:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      currency_code:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      formatted_amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                              total_price:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      currency_code:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      formatted_amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                              base_unit_price:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      currency_code:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      formatted_amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                              base_total_price:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      currency_code:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                                      formatted_amount:
+ *                                                          type: string
+ *                                                          example: "IT001"
+ *                                              taxInfo:
+ *                                                  type: array
+ *                                                  items:
+ *                                                      type: string
+ *
+ *                                      selected_modifier_groups:
+ *                                          type: array
+ *                                          items:
+ *                                              type: object
+ *                                              properties:
+ *                                                  id:
+ *                                                      type: string
+ *                                                      example: "IT001"
+ *                                                  title:
+ *                                                      type: string
+ *                                                      example: "1"
+ *                                                  external_data:
+ *                                                      type: string
+ *                                                      example: "1"
+ *                                                  selected_items:
+ *                                                      type: array
+ *                                                      items:
+ *                                                          type: object
+ *                                                          properties:
+ *                                                              id:
+ *                                                                  type: string
+ *                                                                  example: "IT001"
+ *                                                              title:
+ *                                                                  type: string
+ *                                                                  example: "IT001"
+ *                                                              external_data:
+ *                                                                  type: string
+ *                                                                  example: "IT001"
+ *                                                              quantity:
+ *                                                                  type: string
+ *                                                                  example: "IT001"
+ *                                                              price:
+ *                                                                  type: object
+ *                                                                  properties:
+ *                                                                      unit_price:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              currency_code:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              formatted_amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                      total_price:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              currency_code:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              formatted_amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                      base_unit_price:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              currency_code:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              formatted_amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                      base_total_price:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              currency_code:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                                              formatted_amount:
+ *                                                                                  type: string
+ *                                                                                  example: "IT001"
+ *                                                              default_quantity:
+ *                                                                  type: string
+ *                                                                  example: "0"
+ *                                                  removed_items:
+ *                                                      type: string
+ *                                                      example: "1"
+ *                                      eater_id:
+ *                                          type: string
+ *                                          example: "1"
+ *                  employee_id:
+ *                      type: object
+ *                      properties:
+ *                          employee_store_id:
+ *                              type: string
+ *                              example: "10"
+ *                          name_employee_id:
+ *                              type: string
+ *                              example: "12"
+ *                  payment:
+ *                      type: object
+ *                      properties:
+ *                          placed_at:
+ *                              type: string
+ *                              example: "10"
+ *                          closed_at:
+ *                              type: string
+ *                              example: "12"
+ *                          partner_payment_id:
+ *                              type: string
+ *                              example: "10"
+ *                          venue_payment_id:
+ *                              type: string
+ *                              example: "12"
+ *                          payment_type_id:
+ *                              type: string
+ *                              example: "10"
+ *                          tips:
+ *                              type: string
+ *                              example: "12"
+ *                          charges:
+ *                              type: object
+ *                              properties:
+ *                                  total:
+ *                                      type: object
+ *                                      properties:
+ *                                           amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           currency_code:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           formatted_amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                  sub_total:
+ *                                      type: object
+ *                                      properties:
+ *                                           amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           currency_code:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           formatted_amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                  tax:
+ *                                      type: object
+ *                                      properties:
+ *                                           amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           currency_code:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           formatted_amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                  total_fee:
+ *                                      type: object
+ *                                      properties:
+ *                                           amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           currency_code:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           formatted_amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                  cash_amount_due:
+ *                                      type: object
+ *                                      properties:
+ *                                           amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           currency_code:
+ *                                               type: string
+ *                                               example: "IT001"
+ *                                           formatted_amount:
+ *                                               type: string
+ *                                               example: "IT001"
+ *      responses:
+ *          '200':
+ *              description: New admin created successfully !!!
+ */
+
+router.put("/order_details/update/:tags/:email", (req, res) => {
+  //Insert : Très bien koa
+
+  let query = {};
+  query[req.params.tags] = req.params.email;
+
+  const updateRecord = {
+    display_id: req.body.display_id,
+    external_reference_id: req.body.external_reference_id,
+    number: req.body.number,
+    current_state: req.body.current_state,
+    rating: req.body.rating,
+    store: req.body.store,
+    eater: req.body.eater,
+    eaters: req.body.eaters,
+    cart: req.body.cart,
+    employee_id: req.body.employee_id,
+    payment: req.body.payment,
+  };
+
+  Order_detail.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log("Update error : " + err);
+    }
+  );
+});
+/**
+ * @swagger
+ *  /order_details/delete/{Field name}/{info}:
+ *   delete:
+ *    tags: [Order]
+ *    summary : Remove a QrCode
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Remove a QrCode
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id"]
+ *       required: true
+ *       schema:
+ *         type: string
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: ID of the QrCode to remove
+ *       required: true
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid ID
+ *      '404':
+ *          description: QrCode not found
+ */
+router.delete("/order_details/delete/:tags/:id", (req, res) => {
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Order_detail.deleteOne(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The order with the e-mail : ${req.params.id} has been deleted from the database.`
+    );
   });
 });
 
