@@ -2967,8 +2967,14 @@ router.get('/order_details/list', (req, res) => {
  *                      type: string
  *                      example: "Created"
  *                  rating:
- *                      type: string
- *                      example: "8.2"
+ *                      type: object
+ *                      properties:
+ *                          rating_note:
+ *                              type: string
+ *                              example: "10"
+ *                          rating_rate:
+ *                              type: string
+ *                              example: "Very good"
  *                  store:
  *                      type: object
  *                      properties:
@@ -4171,6 +4177,133 @@ router.delete('/qrcode/delete/:tags/:id', (req, res) => {
     );
   });
 });
+
+/*******************************************DEBUT REVIEW************************************************ */
+
+/**
+ * @swagger
+ * /review/add/:
+ *    post:
+ *      tags: [Review]
+ *      summary: Add a new review by
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: requestBody
+ *            description: request body
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  store_id:
+ *                      type: string
+ *                      example: "01"
+ *                  first_name:
+ *                      type: string
+ *                      example: "Rancard"
+ *                  last_name:
+ *                      type: string
+ *                      example: "01"
+ *                  email:
+ *                      type: string
+ *                      example: "Rancard"
+ *                  phone_number:
+ *                      type: string
+ *                      example: "01"
+ *                  rating:
+ *                      type: string
+ *                      example: "Rancard"
+ *                  rating_rate:
+ *                      type: string
+ *                      example: "01"
+ *                  date_of_birth:
+ *                      type: string
+ *                      example: "Rancard"
+ *      responses:
+ *          '200':
+ *              description: New review added successfully !!!
+ */
+
+router.post('/review/add/', (req, res) => {
+  //Insert : Très bien koa
+  const newRecord = new Review({
+    store_id: req.body.store_id,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    email: req.body.email,
+    phone_number: req.body.phone_number,
+    rating: req.body.rating,
+    rating_rate: req.body.rating_rate,
+    date_of_birth: req.body.date_of_birth,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log('Error sending new data : ' + err);
+  });
+});
+
+/**
+ *  @swagger
+ * paths:
+ *  /Review:
+ *   get:
+ *    tags: [Review]
+ *    summary : List all reviews
+ *    security:
+ *      - ApiKeyAuth: []
+ *    description: Fetch the list of reviews
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ */
+router.get('/Review', (req, res) => {
+  //Select all users: OK
+  Review.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ *  /Review/{Field name}/{info}:
+ *   get:
+ *    tags: [Review]
+ *    summary : Find review by info
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Return a single element
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["store_id","first_name","last_name","email","rating","rating_rate"]
+ *       required: true
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       required: true
+ *       schema:
+ *         type: integer
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid info
+ *      '404':
+ *          description: Review do not exist
+ */
+router.get('/review/:tags/:id', (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Review.find(query, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
 /*******************************************FIN ORDER*************************************************** */
 
 /**
