@@ -3780,7 +3780,7 @@ router.delete('/order_details/delete/:tags/:id', (req, res) => {
  *                      example: "01"
  *                  qr_code_link:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: "https://eats-api-project.herokuapp.com/"
  *                  image_format:
  *                      type: string
  *                      example: "4"
