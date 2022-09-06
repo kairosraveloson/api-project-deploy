@@ -14,6 +14,7 @@ const { Table } = require('../models/Table');
 const { Order_detail } = require('../models/Order_detail');
 const { QrCode } = require('../models/QrCode');
 const { Venue } = require('../models/Venue');
+const { Review } = require('../models/Review');
 //const { Order_detail } = require("../models/Order_detail");
 
 const { Order } = require('../models/Order');
