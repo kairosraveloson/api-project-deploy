@@ -1,39 +1,40 @@
 // routes, appelé communement Controller
-const express = require("express"); // Spécification du package à utiliser
+const express = require('express'); // Spécification du package à utiliser
 const router = express.Router();
-const ObjectID = require("mongoose").Types.ObjectId;
+const ObjectID = require('mongoose').Types.ObjectId;
 
-const { User } = require("../models/User");
-const { Admin } = require("../models/Admin");
-const { Store } = require("../models/Store");
-const { Customer } = require("../models/Customer");
-const { Categorie } = require("../models/Categorie");
-const { Tax } = require("../models/Taxe");
-const { Item } = require("../models/Item");
-const { Table } = require("../models/Table");
-const { Order_detail } = require("../models/Order_detail");
-const { QrCode } = require("../models/QrCode");
+const { User } = require('../models/User');
+const { Admin } = require('../models/Admin');
+const { Store } = require('../models/Store');
+const { Customer } = require('../models/Customer');
+const { Categorie } = require('../models/Categorie');
+const { Tax } = require('../models/Taxe');
+const { Item } = require('../models/Item');
+const { Table } = require('../models/Table');
+const { Order_detail } = require('../models/Order_detail');
+const { QrCode } = require('../models/QrCode');
+const { Venue } = require('../models/Venue');
 //const { Order_detail } = require("../models/Order_detail");
 
-const { Order } = require("../models/Order");
+const { Order } = require('../models/Order');
 
-router.get("/", function (err, res) {
-  res.redirect("/eats-api");
+router.get('/', function (err, res) {
+  res.redirect('/eats-api');
 });
 
-router.get("/api-docs", function (err, res) {
-  res.redirect("/eats-api");
+router.get('/api-docs', function (err, res) {
+  res.redirect('/eats-api');
 });
 
 /********************************************************* Items ****************************************************/
-router.get("/items/category/:value", (req, res) => {
+router.get('/items/category/:value', (req, res) => {
   Item.find({ item_category: req.params.value }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/items/category/", (req, res) => {
+router.get('/items/category/', (req, res) => {
   Item.find({}, { _id: 0, item_category: 1, itemid: 1 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
@@ -42,48 +43,48 @@ router.get("/items/category/", (req, res) => {
 
 /********************************************************* Items ****************************************************/
 /********************************************************* Order ****************************************************/
-router.get("/order/created", (req, res) => {
-  Order.find({ Current_state: "Created" }, { _id: 0 }, (err, docs) => {
+router.get('/order/created', (req, res) => {
+  Order.find({ Current_state: 'Created' }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/order/accepted", (req, res) => {
-  Order.find({ Current_state: "Accepted" }, { _id: 0 }, (err, docs) => {
+router.get('/order/accepted', (req, res) => {
+  Order.find({ Current_state: 'Accepted' }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/order/finished", (req, res) => {
-  Order.find({ Current_state: "Finished" }, { _id: 0 }, (err, docs) => {
+router.get('/order/finished', (req, res) => {
+  Order.find({ Current_state: 'Finished' }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/order/rejected", (req, res) => {
-  Order.find({ Current_state: "Rejected" }, { _id: 0 }, (err, docs) => {
+router.get('/order/rejected', (req, res) => {
+  Order.find({ Current_state: 'Rejected' }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/order/:id", (req, res) => {
+router.get('/order/:id', (req, res) => {
   let query = {};
-  query["Order_id"] = req.params.id;
+  query['Order_id'] = req.params.id;
   Order.find(query, { items_information: 1, _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get("/order/exist/:id", (req, res) => {
+router.get('/order/exist/:id', (req, res) => {
   let query = {};
   // query["Order_id"] = req.params.id;
   Order.find(
-    { User_ID: req.params.id, Current_state: "En cours" },
+    { User_ID: req.params.id, Current_state: 'En cours' },
     { _id: 0 },
     (err, docs) => {
       if (!err) res.send(docs);
@@ -92,11 +93,11 @@ router.get("/order/exist/:id", (req, res) => {
   );
 });
 
-router.get("/order/get_one/:id", (req, res) => {
+router.get('/order/get_one/:id', (req, res) => {
   let query = {};
   // query["Order_id"] = req.params.id;
   Order.find(
-    { User_ID: req.params.id, Current_state: "En cours" },
+    { User_ID: req.params.id, Current_state: 'En cours' },
     { items_information: 1, _id: 0 },
     (err, docs) => {
       if (!err) res.send(docs);
@@ -105,7 +106,7 @@ router.get("/order/get_one/:id", (req, res) => {
   );
 });
 
-router.post("/order/add", (req, res) => {
+router.post('/order/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Order({
     Order_id: req.body.Order_id,
@@ -118,22 +119,22 @@ router.post("/order/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
-router.put("/order/patch/:id", (req, res) => {
+router.put('/order/patch/:id', (req, res) => {
   const updateRecord = {
     items_information: req.body.items_information,
   };
 
   Order.findOneAndUpdate(
-    { User_ID: req.params.id, Current_state: "En cours" },
+    { User_ID: req.params.id, Current_state: 'En cours' },
     { $set: updateRecord },
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -170,11 +171,11 @@ router.put("/order/patch/:id", (req, res) => {
  *          '200':
  *              description: Information updated successfully !!!
  */
-router.put("/order/Orderstate/:mail", (req, res) => {
+router.put('/order/Orderstate/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
-  query["Order_id"] = req.params.mail;
+  query['Order_id'] = req.params.mail;
 
   const updateRecord = {
     Current_state: req.body.Current_state,
@@ -187,7 +188,7 @@ router.put("/order/Orderstate/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -257,7 +258,7 @@ router.put("/order/Orderstate/:mail", (req, res) => {
  *              description: New user created successfully !!!
  */
 
-router.post("/user/add", (req, res) => {
+router.post('/user/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new User({
     userid: req.body.userid,
@@ -269,7 +270,7 @@ router.post("/user/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -287,7 +288,7 @@ router.post("/user/add", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/user", (req, res) => {
+router.get('/user', (req, res) => {
   //Select all users: OK
   User.find((err, docs) => {
     if (!err) res.send(docs);
@@ -326,7 +327,7 @@ router.get("/user", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.get("/user/:tags/:id", (req, res) => {
+router.get('/user/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -381,7 +382,7 @@ router.get("/user/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/user/update/:tags/:mail", (req, res) => {
+router.put('/user/update/:tags/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -400,7 +401,7 @@ router.put("/user/update/:tags/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -435,7 +436,7 @@ router.put("/user/update/:tags/:mail", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete("/user/delete/:tags/:id", (req, res) => {
+router.delete('/user/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -497,7 +498,7 @@ router.delete("/user/delete/:tags/:id", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post("/admin/add", (req, res) => {
+router.post('/admin/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Admin({
     adminid: req.body.Adminid,
@@ -511,7 +512,7 @@ router.post("/admin/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -529,7 +530,7 @@ router.post("/admin/add", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/admin", (req, res) => {
+router.get('/admin', (req, res) => {
   //Select all users: OK
   Admin.find((err, docs) => {
     if (!err) res.send(docs);
@@ -566,7 +567,7 @@ router.get("/admin", (req, res) => {
  *      '404':
  *          description: Administrator not found
  */
-router.get("/admin/:tags/:id", (req, res) => {
+router.get('/admin/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -627,7 +628,7 @@ router.get("/admin/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/admin/update/:tags/:email", (req, res) => {
+router.put('/admin/update/:tags/:email', (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -650,7 +651,7 @@ router.put("/admin/update/:tags/:email", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -685,7 +686,7 @@ router.put("/admin/update/:tags/:email", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete("/admin/delete/:tags/:id", (req, res) => {
+router.delete('/admin/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -846,7 +847,7 @@ router.delete("/admin/delete/:tags/:id", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post("/store/add", (req, res) => {
+router.post('/store/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Store({
     storeid: req.body.storeid,
@@ -870,7 +871,7 @@ router.post("/store/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -888,7 +889,7 @@ router.post("/store/add", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/store", (req, res) => {
+router.get('/store', (req, res) => {
   //Select all users: OK
   Store.find((err, docs) => {
     if (!err) res.send(docs);
@@ -908,7 +909,7 @@ router.get("/store", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/store/Status", (req, res) => {
+router.get('/store/Status', (req, res) => {
   //Select one article : OK
   // SELECT storeid, name, status from store
   Store.find({}, { _id: 0, storeid: 1, name: 1, status: 1 }, (err, docs) => {
@@ -948,7 +949,7 @@ router.get("/store/Status", (req, res) => {
  *      '404':
  *          description: Store not found
  */
-router.get("/store/:tags/:id", (req, res) => {
+router.get('/store/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1114,7 +1115,7 @@ router.get("/store/:tags/:id", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.put("/store/update/:tags/:storeid", (req, res) => {
+router.put('/store/update/:tags/:storeid', (req, res) => {
   // Update : De mbola très bien koa
   //if(!ObjectID.isValid(req.params.id))
   //    return res.status(400).send("ID Unknown : " + req.params.id);
@@ -1147,7 +1148,7 @@ router.put("/store/update/:tags/:storeid", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -1182,7 +1183,7 @@ router.put("/store/update/:tags/:storeid", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete("/store/delete/:tags/:id", (req, res) => {
+router.delete('/store/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1263,7 +1264,7 @@ router.delete("/store/delete/:tags/:id", (req, res) => {
  *              description: New customer created successfully !!!
  */
 
-router.post("/customer/add", (req, res) => {
+router.post('/customer/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Customer({
     customerid: req.body.customerid,
@@ -1284,7 +1285,7 @@ router.post("/customer/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -1302,7 +1303,7 @@ router.post("/customer/add", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/customer", (req, res) => {
+router.get('/customer', (req, res) => {
   //Select all users: OK
   Customer.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1338,7 +1339,7 @@ router.get("/customer", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.get("/customer/:tags/:id", (req, res) => {
+router.get('/customer/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1418,11 +1419,11 @@ router.get("/customer/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/customer/update/:mail", (req, res) => {
+router.put('/customer/update/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
-  query["e_mail"] = req.params.mail;
+  query['e_mail'] = req.params.mail;
 
   //   if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -1448,7 +1449,7 @@ router.put("/customer/update/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -1483,7 +1484,7 @@ router.put("/customer/update/:mail", (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete("/customer/delete/:tags/:id", (req, res) => {
+router.delete('/customer/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1529,7 +1530,7 @@ router.delete("/customer/delete/:tags/:id", (req, res) => {
  *              description: Invalid ID
  */
 
-router.post("/category/add", (req, res) => {
+router.post('/category/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Categorie({
     category_id: req.body.category_id,
@@ -1539,7 +1540,7 @@ router.post("/category/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -1561,7 +1562,7 @@ router.post("/category/add", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get("/category", (req, res) => {
+router.get('/category', (req, res) => {
   //Select all categories: OK
   Categorie.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1597,7 +1598,7 @@ router.get("/category", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get("/category/:tags/:id", (req, res) => {
+router.get('/category/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1643,7 +1644,7 @@ router.get("/category/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/category/update/:tags/:mail", (req, res) => {
+router.put('/category/update/:tags/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -1660,7 +1661,7 @@ router.put("/category/update/:tags/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -1695,7 +1696,7 @@ router.put("/category/update/:tags/:mail", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete("/category/delete/:tags/:id", (req, res) => {
+router.delete('/category/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1742,7 +1743,7 @@ router.delete("/category/delete/:tags/:id", (req, res) => {
  *              description: Invalid ID
  */
 
-router.post("/tax/add", (req, res) => {
+router.post('/tax/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Tax({
     taxid: req.body.taxid,
@@ -1752,7 +1753,7 @@ router.post("/tax/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -1774,7 +1775,7 @@ router.post("/tax/add", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get("/tax", (req, res) => {
+router.get('/tax', (req, res) => {
   //Select all categories: OK
   Tax.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1810,7 +1811,7 @@ router.get("/tax", (req, res) => {
  *      '404':
  *          description: Tax not found
  */
-router.get("/tax/:tags/:id", (req, res) => {
+router.get('/tax/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1856,7 +1857,7 @@ router.get("/tax/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/tax/update/:tags/:mail", (req, res) => {
+router.put('/tax/update/:tags/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -1873,7 +1874,7 @@ router.put("/tax/update/:tags/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -1908,7 +1909,7 @@ router.put("/tax/update/:tags/:mail", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete("/tax/delete/:tags/:id", (req, res) => {
+router.delete('/tax/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2162,7 +2163,7 @@ router.delete("/tax/delete/:tags/:id", (req, res) => {
  *              description: Invalid ID
  */
 
-router.post("/item/add", (req, res) => {
+router.post('/item/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Item({
     itemid: req.body.itemid,
@@ -2194,7 +2195,7 @@ router.post("/item/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -2216,7 +2217,7 @@ router.post("/item/add", (req, res) => {
  *      '404':
  *          description: Item not found
  */
-router.get("/item", (req, res) => {
+router.get('/item', (req, res) => {
   //Select all categories: OK
   Item.find((err, docs) => {
     if (!err) res.send(docs);
@@ -2252,7 +2253,7 @@ router.get("/item", (req, res) => {
  *      '404':
  *          description: Tax not found
  */
-router.get("/item/:tags/:id", (req, res) => {
+router.get('/item/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2262,7 +2263,7 @@ router.get("/item/:tags/:id", (req, res) => {
   });
 });
 
-router.get("/item/image_url", (req, res) => {
+router.get('/item/image_url', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2517,7 +2518,7 @@ router.get("/item/image_url", (req, res) => {
  *              description: Invalid ID
  */
 
-router.put("/item/update/:tags/:mail", (req, res) => {
+router.put('/item/update/:tags/:mail', (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -2556,7 +2557,7 @@ router.put("/item/update/:tags/:mail", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -2591,7 +2592,7 @@ router.put("/item/update/:tags/:mail", (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete("/item/delete/:tags/:id", (req, res) => {
+router.delete('/item/delete/:tags/:id', (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2624,9 +2625,9 @@ router.delete("/item/delete/:tags/:id", (req, res) => {
  *      '404':
  *          description: Menu not found
  */
-router.get("/menu", (req, res) => {
+router.get('/menu', (req, res) => {
   //Select all categories: OK
-  Item.find({ item_type: "Menu" }, (err, docs) => {
+  Item.find({ item_type: 'Menu' }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
@@ -2695,7 +2696,7 @@ router.get("/menu", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post("/table/add", (req, res) => {
+router.post('/table/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Table({
     table_id: req.body.table_id,
@@ -2709,7 +2710,7 @@ router.post("/table/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -2727,7 +2728,7 @@ router.post("/table/add", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/table", (req, res) => {
+router.get('/table', (req, res) => {
   //Select all users: OK
   Table.find((err, docs) => {
     if (!err) res.send(docs);
@@ -2764,7 +2765,7 @@ router.get("/table", (req, res) => {
  *      '404':
  *          description: Table not found
  */
-router.get("/table/:tags/:id", (req, res) => {
+router.get('/table/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2840,7 +2841,7 @@ router.get("/table/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/table/update/:tags/:email", (req, res) => {
+router.put('/table/update/:tags/:email', (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -2864,7 +2865,7 @@ router.put("/table/update/:tags/:email", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -2899,7 +2900,7 @@ router.put("/table/update/:tags/:email", (req, res) => {
  *      '404':
  *          description: Table not found
  */
-router.delete("/table/delete/:tags/:id", (req, res) => {
+router.delete('/table/delete/:tags/:id', (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Admin.deleteMany(query, function (err, obj) {
@@ -2926,7 +2927,7 @@ router.delete("/table/delete/:tags/:id", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/order_details/list", (req, res) => {
+router.get('/order_details/list', (req, res) => {
   //Select all users: OK
   Order_detail.find({}, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
@@ -3291,7 +3292,7 @@ router.get("/order_details/list", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post("/order_details/add", (req, res) => {
+router.post('/order_details/add', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Order_detail({
     id: req.body.id,
@@ -3310,7 +3311,7 @@ router.post("/order_details/add", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -3681,7 +3682,7 @@ router.post("/order_details/add", (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.put("/order_details/update/:tags/:email", (req, res) => {
+router.put('/order_details/update/:tags/:email', (req, res) => {
   //Insert : Très bien koa
 
   let query = {};
@@ -3707,7 +3708,7 @@ router.put("/order_details/update/:tags/:email", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -3741,7 +3742,7 @@ router.put("/order_details/update/:tags/:email", (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.delete("/order_details/delete/:tags/:id", (req, res) => {
+router.delete('/order_details/delete/:tags/:id', (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Order_detail.deleteOne(query, function (err, obj) {
@@ -3784,7 +3785,7 @@ router.delete("/order_details/delete/:tags/:id", (req, res) => {
  *              description: New QrCode created successfully !!!
  */
 
-router.post("/qrcode/add/", (req, res) => {
+router.post('/qrcode/add/', (req, res) => {
   //Insert : Très bien koa
   const newRecord = new QrCode({
     frame_name: req.body.frame_name,
@@ -3795,7 +3796,7 @@ router.post("/qrcode/add/", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log("Error sending new data : " + err);
+    else console.log('Error sending new data : ' + err);
   });
 });
 
@@ -3813,7 +3814,7 @@ router.post("/qrcode/add/", (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get("/table", (req, res) => {
+router.get('/QrCode', (req, res) => {
   //Select all users: OK
   QrCode.find((err, docs) => {
     if (!err) res.send(docs);
@@ -3850,7 +3851,7 @@ router.get("/table", (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.get("/qrcode/:tags/:id", (req, res) => {
+router.get('/qrcode/:tags/:id', (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -3902,7 +3903,7 @@ router.get("/qrcode/:tags/:id", (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put("/qrcode/update/:tags/:email", (req, res) => {
+router.put('/qrcode/update/:tags/:email', (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -3922,7 +3923,7 @@ router.put("/qrcode/update/:tags/:email", (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log("Update error : " + err);
+      else console.log('Update error : ' + err);
     }
   );
 });
@@ -3957,7 +3958,7 @@ router.put("/qrcode/update/:tags/:email", (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.delete("/qrcode/delete/:tags/:id", (req, res) => {
+router.delete('/qrcode/delete/:tags/:id', (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Admin.deleteMany(query, function (err, obj) {
@@ -3968,6 +3969,207 @@ router.delete("/qrcode/delete/:tags/:id", (req, res) => {
   });
 });
 
+/*******************************************DEBUT VENUE************************************************* */
+
+/**
+ * @swagger
+ * /venue/add/:
+ *    post:
+ *      tags: [Venue]
+ *      summary: Add a new venue
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: requestBody
+ *            description: request body
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  venue_code_id:
+ *                      type: string
+ *                      example: "01"
+ *                  venue_api_key_id:
+ *                      type: string
+ *                      example: "Rancard"
+ *      responses:
+ *          '200':
+ *              description: New venue created successfully !!!
+ */
+
+router.post('/venue/add/', (req, res) => {
+  //Insert : Très bien koa
+  const newRecord = new Venue({
+    venue_code_id: req.body.venue_code_id,
+    venue_api_key_id: req.body.venue_api_key_id,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log('Error sending new data : ' + err);
+  });
+});
+
+/**
+ *  @swagger
+ * paths:
+ *  /venue:
+ *   get:
+ *    tags: [Venue]
+ *    summary : List all venue
+ *    security:
+ *      - ApiKeyAuth: []
+ *    description: Fetch the list of venue
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ */
+router.get('/Venue', (req, res) => {
+  //Select all users: OK
+  Venue.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ *  /venue/{Field name}/{info}:
+ *   get:
+ *    tags: [QrCode]
+ *    summary : Find QrCode by info
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Return a single element
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["venue_code_id","venue_api_key_id"]
+ *       required: true
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       required: true
+ *       schema:
+ *         type: integer
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid ID
+ *      '404':
+ *          description: Venue not found
+ */
+router.get('/venue/:tags/:id', (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Venue.find(query, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ * /venue/Update/{Field value}/{id}:
+ *    put:
+ *      tags: [Venue]
+ *      summary: Update a venue
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["venue_code_id","venue_api_key_id"]
+ *            required: true
+ *          - name: id
+ *            description: ID of the venue
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove all fields that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  venue_code_id:
+ *                      type: string
+ *                      example: "Rancard"
+ *                  venue_api_key_id:
+ *                      type: string
+ *                      example: "4"
+ *      responses:
+ *          '200':
+ *              description: Information updated successfully !!!
+ */
+
+router.put('/venue/update/:email', (req, res) => {
+  // Update : De mbola très bien koa
+  //  if(!ObjectID.isValid(req.params.id))
+  //     return res.status(400).send("ID Unknown : " + req.params.id);
+
+  let query = {};
+  query['venue_code_id'] = req.params.email;
+
+  const updateRecord = {
+    venue_api_key_id: req.body.venue_api_key_id,
+  };
+
+  Venue.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log('Update error : ' + err);
+    }
+  );
+});
+
+/**
+ * @swagger
+ *  /venue/delete/{Field name}/{info}:
+ *   delete:
+ *    tags: [Venue]
+ *    summary : Remove a venue
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Remove a venue
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["venue_code_id","venue_api_key_id"]
+ *       required: true
+ *       schema:
+ *         type: string
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: ID of the venue to remove
+ *       required: true
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid ID
+ *      '404':
+ *          description: Venue not found
+ */
+router.delete('/qrcode/delete/:tags/:id', (req, res) => {
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Venue.deleteOne(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The venue with the e-mail : ${req.params.id} has been deleted from the database.`
+    );
+  });
+});
 /*******************************************FIN ORDER*************************************************** */
 
 /**
