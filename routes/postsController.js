@@ -1,41 +1,43 @@
 // routes, appelé communement Controller
-const express = require('express'); // Spécification du package à utiliser
+const express = require("express"); // Spécification du package à utiliser
 const router = express.Router();
-const ObjectID = require('mongoose').Types.ObjectId;
+const ObjectID = require("mongoose").Types.ObjectId;
 
-const { User } = require('../models/User');
-const { Admin } = require('../models/Admin');
-const { Store } = require('../models/Store');
-const { Customer } = require('../models/Customer');
-const { Categorie } = require('../models/Categorie');
-const { Tax } = require('../models/Taxe');
-const { Item } = require('../models/Item');
-const { Table } = require('../models/Table');
-const { Order_detail } = require('../models/Order_detail');
-const { QrCode } = require('../models/QrCode');
-const { Venue } = require('../models/Venue');
-const { Review } = require('../models/Review');
+const { User } = require("../models/User");
+const { Admin } = require("../models/Admin");
+const { Store } = require("../models/Store");
+const { Customer } = require("../models/Customer");
+const { Categorie } = require("../models/Categorie");
+const { Tax } = require("../models/Taxe");
+const { Item } = require("../models/Item");
+const { Table } = require("../models/Table");
+const { Order_detail } = require("../models/Order_detail");
+const { QrCode } = require("../models/QrCode");
+const { Venue } = require("../models/Venue");
+const { Review } = require("../models/Review");
+const { Payment } = require("../models/Payment");
+const { Menu } = require("../models/Menu");
 //const { Order_detail } = require("../models/Order_detail");
 
-const { Order } = require('../models/Order');
+const { Order } = require("../models/Order");
 
-router.get('/', function (err, res) {
-  res.redirect('/eats-api');
+router.get("/", function (err, res) {
+  res.redirect("/eats-api");
 });
 
-router.get('/api-docs', function (err, res) {
-  res.redirect('/eats-api');
+router.get("/api-docs", function (err, res) {
+  res.redirect("/eats-api");
 });
 
 /********************************************************* Items ****************************************************/
-router.get('/items/category/:value', (req, res) => {
+router.get("/items/category/:value", (req, res) => {
   Item.find({ item_category: req.params.value }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/items/category/', (req, res) => {
+router.get("/items/category/", (req, res) => {
   Item.find({}, { _id: 0, item_category: 1, itemid: 1 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
@@ -44,48 +46,48 @@ router.get('/items/category/', (req, res) => {
 
 /********************************************************* Items ****************************************************/
 /********************************************************* Order ****************************************************/
-router.get('/order/created', (req, res) => {
-  Order.find({ Current_state: 'Created' }, { _id: 0 }, (err, docs) => {
+router.get("/order/created", (req, res) => {
+  Order.find({ Current_state: "Created" }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/order/accepted', (req, res) => {
-  Order.find({ Current_state: 'Accepted' }, { _id: 0 }, (err, docs) => {
+router.get("/order/accepted", (req, res) => {
+  Order.find({ Current_state: "Accepted" }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/order/finished', (req, res) => {
-  Order.find({ Current_state: 'Finished' }, { _id: 0 }, (err, docs) => {
+router.get("/order/finished", (req, res) => {
+  Order.find({ Current_state: "Finished" }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/order/rejected', (req, res) => {
-  Order.find({ Current_state: 'Rejected' }, { _id: 0 }, (err, docs) => {
+router.get("/order/rejected", (req, res) => {
+  Order.find({ Current_state: "Rejected" }, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/order/:id', (req, res) => {
+router.get("/order/:id", (req, res) => {
   let query = {};
-  query['Order_id'] = req.params.id;
+  query["Order_id"] = req.params.id;
   Order.find(query, { items_information: 1, _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
   });
 });
 
-router.get('/order/exist/:id', (req, res) => {
+router.get("/order/exist/:id", (req, res) => {
   let query = {};
   // query["Order_id"] = req.params.id;
   Order.find(
-    { User_ID: req.params.id, Current_state: 'En cours' },
+    { User_ID: req.params.id, Current_state: "En cours" },
     { _id: 0 },
     (err, docs) => {
       if (!err) res.send(docs);
@@ -94,11 +96,11 @@ router.get('/order/exist/:id', (req, res) => {
   );
 });
 
-router.get('/order/get_one/:id', (req, res) => {
+router.get("/order/get_one/:id", (req, res) => {
   let query = {};
   // query["Order_id"] = req.params.id;
   Order.find(
-    { User_ID: req.params.id, Current_state: 'En cours' },
+    { User_ID: req.params.id, Current_state: "En cours" },
     { items_information: 1, _id: 0 },
     (err, docs) => {
       if (!err) res.send(docs);
@@ -107,7 +109,7 @@ router.get('/order/get_one/:id', (req, res) => {
   );
 });
 
-router.post('/order/add', (req, res) => {
+router.post("/order/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Order({
     Order_id: req.body.Order_id,
@@ -120,22 +122,22 @@ router.post('/order/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
-router.put('/order/patch/:id', (req, res) => {
+router.put("/order/patch/:id", (req, res) => {
   const updateRecord = {
     items_information: req.body.items_information,
   };
 
   Order.findOneAndUpdate(
-    { User_ID: req.params.id, Current_state: 'En cours' },
+    { User_ID: req.params.id, Current_state: "En cours" },
     { $set: updateRecord },
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -172,11 +174,11 @@ router.put('/order/patch/:id', (req, res) => {
  *          '200':
  *              description: Information updated successfully !!!
  */
-router.put('/order/Orderstate/:mail', (req, res) => {
+router.put("/order/Orderstate/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
-  query['Order_id'] = req.params.mail;
+  query["Order_id"] = req.params.mail;
 
   const updateRecord = {
     Current_state: req.body.Current_state,
@@ -189,7 +191,7 @@ router.put('/order/Orderstate/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -259,7 +261,7 @@ router.put('/order/Orderstate/:mail', (req, res) => {
  *              description: New user created successfully !!!
  */
 
-router.post('/user/add', (req, res) => {
+router.post("/user/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new User({
     userid: req.body.userid,
@@ -271,7 +273,7 @@ router.post('/user/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -289,7 +291,7 @@ router.post('/user/add', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/user', (req, res) => {
+router.get("/user", (req, res) => {
   //Select all users: OK
   User.find((err, docs) => {
     if (!err) res.send(docs);
@@ -328,7 +330,7 @@ router.get('/user', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.get('/user/:tags/:id', (req, res) => {
+router.get("/user/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -383,7 +385,7 @@ router.get('/user/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/user/update/:tags/:mail', (req, res) => {
+router.put("/user/update/:tags/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -402,7 +404,7 @@ router.put('/user/update/:tags/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -437,11 +439,11 @@ router.put('/user/update/:tags/:mail', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete('/user/delete/:tags/:id', (req, res) => {
+router.delete("/user/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  User.deleteMany(query, function (err, obj) {
+  User.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The user with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
@@ -499,7 +501,7 @@ router.delete('/user/delete/:tags/:id', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post('/admin/add', (req, res) => {
+router.post("/admin/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Admin({
     adminid: req.body.Adminid,
@@ -513,7 +515,7 @@ router.post('/admin/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -531,7 +533,7 @@ router.post('/admin/add', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/admin', (req, res) => {
+router.get("/admin", (req, res) => {
   //Select all users: OK
   Admin.find((err, docs) => {
     if (!err) res.send(docs);
@@ -568,7 +570,7 @@ router.get('/admin', (req, res) => {
  *      '404':
  *          description: Administrator not found
  */
-router.get('/admin/:tags/:id', (req, res) => {
+router.get("/admin/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -629,7 +631,7 @@ router.get('/admin/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/admin/update/:tags/:email', (req, res) => {
+router.put("/admin/update/:tags/:email", (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -652,7 +654,7 @@ router.put('/admin/update/:tags/:email', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -687,11 +689,11 @@ router.put('/admin/update/:tags/:email', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete('/admin/delete/:tags/:id', (req, res) => {
+router.delete("/admin/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  Admin.deleteMany(query, function (err, obj) {
+  Admin.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The admin with the e-mail : ${req.params.id} has been deleted from the database.`
@@ -758,6 +760,17 @@ router.delete('/admin/delete/:tags/:id', (req, res) => {
  *                      items:
  *                          type: string
  *                          example: supermarket@outlook.fr
+ *                  wifi:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                             network:
+ *                                type: String
+ *                                example: ""
+ *                             password:
+ *                                type: String
+ *                                example: ""
  *                  raw_hero_url:
  *                       type: String
  *                       example: ""
@@ -848,7 +861,7 @@ router.delete('/admin/delete/:tags/:id', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post('/store/add', (req, res) => {
+router.post("/store/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Store({
     storeid: req.body.storeid,
@@ -872,7 +885,7 @@ router.post('/store/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -890,7 +903,7 @@ router.post('/store/add', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/store', (req, res) => {
+router.get("/store", (req, res) => {
   //Select all users: OK
   Store.find((err, docs) => {
     if (!err) res.send(docs);
@@ -910,7 +923,7 @@ router.get('/store', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/store/Status', (req, res) => {
+router.get("/store/Status", (req, res) => {
   //Select one article : OK
   // SELECT storeid, name, status from store
   Store.find({}, { _id: 0, storeid: 1, name: 1, status: 1 }, (err, docs) => {
@@ -950,7 +963,7 @@ router.get('/store/Status', (req, res) => {
  *      '404':
  *          description: Store not found
  */
-router.get('/store/:tags/:id', (req, res) => {
+router.get("/store/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1116,7 +1129,7 @@ router.get('/store/:tags/:id', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.put('/store/update/:tags/:storeid', (req, res) => {
+router.put("/store/update/:tags/:storeid", (req, res) => {
   // Update : De mbola très bien koa
   //if(!ObjectID.isValid(req.params.id))
   //    return res.status(400).send("ID Unknown : " + req.params.id);
@@ -1149,7 +1162,7 @@ router.put('/store/update/:tags/:storeid', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -1184,11 +1197,11 @@ router.put('/store/update/:tags/:storeid', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete('/store/delete/:tags/:id', (req, res) => {
+router.delete("/store/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  Store.deleteMany(query, function (err, obj) {
+  Store.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The store with the ID : ${req.params.id} has been deleted from the database.`
@@ -1220,6 +1233,15 @@ router.delete('/store/delete/:tags/:id', (req, res) => {
  *                  company_description:
  *                      type: string
  *                      example: ""
+ *                  rating:
+ *                      type: object
+ *                      properties:
+ *                          rating_note:
+ *                              type: string
+ *                              example: "10"
+ *                          rating_rate:
+ *                              type: string
+ *                              example: "Very good"
  *                  firstname:
  *                      type: string
  *                      example: ""
@@ -1265,11 +1287,12 @@ router.delete('/store/delete/:tags/:id', (req, res) => {
  *              description: New customer created successfully !!!
  */
 
-router.post('/customer/add', (req, res) => {
+router.post("/customer/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Customer({
     customerid: req.body.customerid,
     company_description: req.body.company_description,
+    rating: req.body.rating,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     e_mail: req.body.e_mail,
@@ -1286,7 +1309,7 @@ router.post('/customer/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -1304,7 +1327,7 @@ router.post('/customer/add', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/customer', (req, res) => {
+router.get("/customer", (req, res) => {
   //Select all users: OK
   Customer.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1340,7 +1363,7 @@ router.get('/customer', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.get('/customer/:tags/:id', (req, res) => {
+router.get("/customer/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1379,6 +1402,15 @@ router.get('/customer/:tags/:id', (req, res) => {
  *                  company_description:
  *                      type: string
  *                      example: ""
+ *                  rating:
+ *                      type: object
+ *                      properties:
+ *                          rating_note:
+ *                              type: string
+ *                              example: "10"
+ *                          rating_rate:
+ *                              type: string
+ *                              example: "Very good"
  *                  firstname:
  *                      type: string
  *                      example: ""
@@ -1420,16 +1452,17 @@ router.get('/customer/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/customer/update/:mail', (req, res) => {
+router.put("/customer/update/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
-  query['e_mail'] = req.params.mail;
+  query["e_mail"] = req.params.mail;
 
   //   if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
   const updateRecord = {
     company_description: req.body.company_description,
+    rating: req.body.rating,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     e_mail: req.body.e_mail,
@@ -1450,7 +1483,7 @@ router.put('/customer/update/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -1485,11 +1518,11 @@ router.put('/customer/update/:mail', (req, res) => {
  *      '404':
  *          description: Items not found
  */
-router.delete('/customer/delete/:tags/:id', (req, res) => {
+router.delete("/customer/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  Customer.deleteMany(query, function (err, obj) {
+  Customer.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The user with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
@@ -1515,15 +1548,18 @@ router.delete('/customer/delete/:tags/:id', (req, res) => {
  *            schema:
  *              type: object
  *              properties:
- *                  category_id:
+ *                  id:
  *                      type: string
  *                      example: "CAT001"
- *                  category_title:
- *                      type: string
- *                      example: ""
- *                  category_description:
- *                      type: string
- *                      example: ""
+ *                  title:
+ *                      type: object
+ *                      properties:
+ *                          translations:
+ *                              type: object
+ *                              properties:
+ *                                  en_us:
+ *                                      type: String
+ *                                      example: ""
  *      responses:
  *          '200':
  *              description: New category created successfully !!!
@@ -1531,17 +1567,16 @@ router.delete('/customer/delete/:tags/:id', (req, res) => {
  *              description: Invalid ID
  */
 
-router.post('/category/add', (req, res) => {
+router.post("/category/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Categorie({
-    category_id: req.body.category_id,
-    category_title: req.body.category_title,
-    category_description: req.body.category_description,
+    id: req.body.category_id,
+    title: req.body.category_title,
   });
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -1563,7 +1598,7 @@ router.post('/category/add', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get('/category', (req, res) => {
+router.get("/category", (req, res) => {
   //Select all categories: OK
   Categorie.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1584,7 +1619,7 @@ router.get('/category', (req, res) => {
  *     - name: Field name
  *       in: path
  *       type: string
- *       enum: ["category_id","category_title"]
+ *       enum: ["id"]
  *       required: true
  *     - name: info
  *       in: path
@@ -1599,10 +1634,10 @@ router.get('/category', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get('/category/:tags/:id', (req, res) => {
+router.get("/category/id/:id", (req, res) => {
   //Select one article : OK
   let query = {};
-  query[req.params.tags] = req.params.id;
+  query["id"] = req.params.id;
   Categorie.find(query, (err, docs) => {
     if (!err) res.send(docs);
     else console.log("Error : couldn't retrieve data " + err);
@@ -1621,7 +1656,7 @@ router.get('/category/:tags/:id', (req, res) => {
  *          - name: Field value
  *            in: path
  *            type: string
- *            enum: ["category_id","category_title"]
+ *            enum: ["id"]
  *            required: true
  *          - name: info
  *            description: ID or e-mail of the category
@@ -1634,26 +1669,28 @@ router.get('/category/:tags/:id', (req, res) => {
  *            schema:
  *              type: object
  *              properties:
- *                  category_title:
- *                      type: string
- *                      example: ""
- *                  category_description:
- *                      type: string
- *                      example: ""
+ *                  title:
+ *                      type: object
+ *                      properties:
+ *                          translations:
+ *                              type: object
+ *                              properties:
+ *                                  en_us:
+ *                                      type: String
+ *                                      example: ""
  *      responses:
  *          '200':
  *              description: Information updated successfully !!!
  */
 
-router.put('/category/update/:tags/:mail', (req, res) => {
+router.put("/category/update/id/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
-  query[req.params.tags] = req.params.mail;
+  query["id"] = req.params.mail;
 
   const updateRecord = {
-    category_title: req.body.category_title,
-    category_description: req.body.category_description,
+    title: req.body.title,
   };
 
   Categorie.findOneAndUpdate(
@@ -1662,7 +1699,7 @@ router.put('/category/update/:tags/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -1697,14 +1734,14 @@ router.put('/category/update/:tags/:mail', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete('/category/delete/:tags/:id', (req, res) => {
+router.delete("/category/delete/id/:id", (req, res) => {
   // Delete : Ok
   let query = {};
-  query[req.params.tags] = req.params.id;
-  Categorie.deleteMany(query, function (err, obj) {
+  query["id"] = req.params.id;
+  Categorie.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
-      `The category with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
+      `The category with the id : ${req.params.id} has been deleted from the database.`
     );
   });
 });
@@ -1744,7 +1781,7 @@ router.delete('/category/delete/:tags/:id', (req, res) => {
  *              description: Invalid ID
  */
 
-router.post('/tax/add', (req, res) => {
+router.post("/tax/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Tax({
     taxid: req.body.taxid,
@@ -1754,7 +1791,7 @@ router.post('/tax/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -1776,7 +1813,7 @@ router.post('/tax/add', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.get('/tax', (req, res) => {
+router.get("/tax", (req, res) => {
   //Select all categories: OK
   Tax.find((err, docs) => {
     if (!err) res.send(docs);
@@ -1812,7 +1849,7 @@ router.get('/tax', (req, res) => {
  *      '404':
  *          description: Tax not found
  */
-router.get('/tax/:tags/:id', (req, res) => {
+router.get("/tax/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -1858,7 +1895,7 @@ router.get('/tax/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/tax/update/:tags/:mail', (req, res) => {
+router.put("/tax/update/:tags/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -1875,7 +1912,7 @@ router.put('/tax/update/:tags/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -1910,11 +1947,11 @@ router.put('/tax/update/:tags/:mail', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete('/tax/delete/:tags/:id', (req, res) => {
+router.delete("/tax/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  Tax.deleteMany(query, function (err, obj) {
+  Tax.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The category with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
@@ -2164,7 +2201,7 @@ router.delete('/tax/delete/:tags/:id', (req, res) => {
  *              description: Invalid ID
  */
 
-router.post('/item/add', (req, res) => {
+router.post("/item/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Item({
     itemid: req.body.itemid,
@@ -2196,7 +2233,7 @@ router.post('/item/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -2218,7 +2255,7 @@ router.post('/item/add', (req, res) => {
  *      '404':
  *          description: Item not found
  */
-router.get('/item', (req, res) => {
+router.get("/item", (req, res) => {
   //Select all categories: OK
   Item.find((err, docs) => {
     if (!err) res.send(docs);
@@ -2254,7 +2291,7 @@ router.get('/item', (req, res) => {
  *      '404':
  *          description: Tax not found
  */
-router.get('/item/:tags/:id', (req, res) => {
+router.get("/item/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2264,7 +2301,7 @@ router.get('/item/:tags/:id', (req, res) => {
   });
 });
 
-router.get('/item/image_url', (req, res) => {
+router.get("/item/image_url", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2519,7 +2556,7 @@ router.get('/item/image_url', (req, res) => {
  *              description: Invalid ID
  */
 
-router.put('/item/update/:tags/:mail', (req, res) => {
+router.put("/item/update/:tags/:mail", (req, res) => {
   // Update : De mbola très bien koa
 
   let query = {};
@@ -2558,7 +2595,7 @@ router.put('/item/update/:tags/:mail', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -2593,11 +2630,11 @@ router.put('/item/update/:tags/:mail', (req, res) => {
  *      '404':
  *          description: Category not found
  */
-router.delete('/item/delete/:tags/:id', (req, res) => {
+router.delete("/item/delete/:tags/:id", (req, res) => {
   // Delete : Ok
   let query = {};
   query[req.params.tags] = req.params.id;
-  Item.deleteMany(query, function (err, obj) {
+  Item.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The category with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
@@ -2609,6 +2646,106 @@ router.delete('/item/delete/:tags/:id', (req, res) => {
 /************************************************** MENU *****************************************/
 
 /**
+ * @swagger
+ * /menu/add/:
+ *    post:
+ *      tags: [Menu]
+ *      summary: Add a new menu
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: requestBody
+ *            description: request body
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      example: ""
+ *                  items:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: "item1"
+ *                  modifier_groups:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: "item1"
+ *                  categories:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: ""
+ *                  menus:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                              id:
+ *                                  type: string
+ *                                  example: "IT001"
+ *                              title:
+ *                                  type: object
+ *                                  properties:
+ *                                      translations:
+ *                                          type: object
+ *                                          properties:
+ *                                              en_us:
+ *                                                  type: String
+ *                                                  example: "Coca-cola"
+ *                              service_availability:
+ *                                  type: array
+ *                                  properties:
+ *                                  items:
+ *                                      type: object
+ *                                      properties:
+ *                                          day_of_week:
+ *                                              type: String
+ *                                              example: "Monday"
+ *                                          time_periods:
+ *                                              type: array
+ *                                              properties:
+ *                                              items:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      start_time:
+ *                                                          type: String
+ *                                                          example: "00:00"
+ *                                                      end_time:
+ *                                                          type: String
+ *                                                          example: "00:00"
+ *                              category_ids:
+ *                                  type: array
+ *                                  items:
+ *                                      type: string
+ *                                      example: ""
+ *                  display_options:
+ *                      type: object
+ *
+ *      responses:
+ *          '200':
+ *              description: New admin created successfully !!!
+ */
+
+router.post("/menu/add", (req, res) => {
+  //Insert : Très bien koa
+  const newRecord = new Menu({
+    id: req.body.id,
+    items: req.body.items,
+    modifier_groups: req.body.modifier_groups,
+    categories: req.body.categories,
+    menus: req.body.menus,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error sending new data : " + err);
+  });
+});
+
+/**
  *  @swagger
  * paths:
  *  /menu:
@@ -2616,21 +2753,171 @@ router.delete('/item/delete/:tags/:id', (req, res) => {
  *    tags: [Menu]
  *    summary : List all menus
  *    security:
- *       - ApiKeyAuth: []
- *    description: Fetch the list of menus
+ *      - ApiKeyAuth: []
+ *    description: Fetch the list of me,nus
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ */
+router.get("/menu", (req, res) => {
+  //Select all users: OK
+  Menu.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ * /menu/Update/{Field value}/{id}:
+ *    put:
+ *      tags: [Menu]
+ *      summary: Update a menu
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["id"]
+ *            required: true
+ *          - name: id
+ *            description: ID or name of the table
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove all fields that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  items:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: "item1"
+ *                  modifier_groups:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: "item1"
+ *                  categories:
+ *                      type: array
+ *                      items:
+ *                          type: string
+ *                          example: ""
+ *                  menus:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                              id:
+ *                                  type: string
+ *                                  example: "IT001"
+ *                              title:
+ *                                  type: object
+ *                                  properties:
+ *                                      translations:
+ *                                          type: object
+ *                                          properties:
+ *                                              en_us:
+ *                                                  type: String
+ *                                                  example: "Coca-cola"
+ *                              service_availability:
+ *                                  type: array
+ *                                  properties:
+ *                                  items:
+ *                                      type: object
+ *                                      properties:
+ *                                          day_of_week:
+ *                                              type: String
+ *                                              example: "Monday"
+ *                                          time_periods:
+ *                                              type: array
+ *                                              properties:
+ *                                              items:
+ *                                                  type: object
+ *                                                  properties:
+ *                                                      start_time:
+ *                                                          type: String
+ *                                                          example: "00:00"
+ *                                                      end_time:
+ *                                                          type: String
+ *                                                          example: "00:00"
+ *                              category_ids:
+ *                                  type: array
+ *                                  items:
+ *                                      type: string
+ *                                      example: ""
+ *                  display_options:
+ *                      type: object
+ *
+ *      responses:
+ *          '200':
+ *              description: New admin created successfully !!!
+ * */
+
+router.put("/menu/update/:tags/:email", (req, res) => {
+  let query = {};
+  query[req.params.tags] = req.params.email;
+
+  const updateRecord = {
+    items: req.body.items,
+    modifier_groups: req.body.modifier_groups,
+    categories: req.body.categories,
+    menus: req.body.menus,
+  };
+
+  Menu.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log("Update error : " + err);
+    }
+  );
+});
+
+/**
+ * @swagger
+ *  /menu/delete/{Field name}/{info}:
+ *   delete:
+ *    tags: [Menu]
+ *    summary : Remove a menu
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Remove a menu
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id"]
+ *       required: true
+ *       schema:
+ *         type: string
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: ID or name of the table to remove
+ *       required: true
  *    responses:
  *      '200':
  *          description : A successful response
  *      '400':
  *          description: Invalid ID
  *      '404':
- *          description: Menu not found
+ *          description: Table not found
  */
-router.get('/menu', (req, res) => {
-  //Select all categories: OK
-  Item.find({ item_type: 'Menu' }, (err, docs) => {
-    if (!err) res.send(docs);
-    else console.log("Error : couldn't retrieve data " + err);
+router.delete("/menu/delete/:tags/:id", (req, res) => {
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Admin.deleteOne(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The table with the e-mail : ${req.params.id} has been deleted from the database.`
+    );
   });
 });
 
@@ -2658,7 +2945,7 @@ router.get('/menu', (req, res) => {
  *                      example: "01"
  *                  table_name:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  table_size:
  *                      type: string
  *                      example: "4"
@@ -2697,7 +2984,7 @@ router.get('/menu', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post('/table/add', (req, res) => {
+router.post("/table/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Table({
     table_id: req.body.table_id,
@@ -2711,7 +2998,7 @@ router.post('/table/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -2729,7 +3016,7 @@ router.post('/table/add', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/table', (req, res) => {
+router.get("/table", (req, res) => {
   //Select all users: OK
   Table.find((err, docs) => {
     if (!err) res.send(docs);
@@ -2766,7 +3053,7 @@ router.get('/table', (req, res) => {
  *      '404':
  *          description: Table not found
  */
-router.get('/table/:tags/:id', (req, res) => {
+router.get("/table/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -2803,7 +3090,7 @@ router.get('/table/:tags/:id', (req, res) => {
  *              properties:
  *                  table_name:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  table_size:
  *                      type: string
  *                      example: "4"
@@ -2842,7 +3129,7 @@ router.get('/table/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/table/update/:tags/:email', (req, res) => {
+router.put("/table/update/:tags/:email", (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -2866,7 +3153,7 @@ router.put('/table/update/:tags/:email', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -2901,10 +3188,10 @@ router.put('/table/update/:tags/:email', (req, res) => {
  *      '404':
  *          description: Table not found
  */
-router.delete('/table/delete/:tags/:id', (req, res) => {
+router.delete("/table/delete/:tags/:id", (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
-  Admin.deleteMany(query, function (err, obj) {
+  Admin.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The table with the e-mail : ${req.params.id} has been deleted from the database.`
@@ -2928,7 +3215,7 @@ router.delete('/table/delete/:tags/:id', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/order_details/list', (req, res) => {
+router.get("/order_details/list", (req, res) => {
   //Select all users: OK
   Order_detail.find({}, { _id: 0 }, (err, docs) => {
     if (!err) res.send(docs);
@@ -2956,7 +3243,7 @@ router.get('/order_details/list', (req, res) => {
  *                      example: "01"
  *                  display_id:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  external_reference_id:
  *                      type: string
  *                      example: "4"
@@ -3299,7 +3586,7 @@ router.get('/order_details/list', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.post('/order_details/add', (req, res) => {
+router.post("/order_details/add", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Order_detail({
     id: req.body.id,
@@ -3318,7 +3605,7 @@ router.post('/order_details/add', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -3352,7 +3639,7 @@ router.post('/order_details/add', (req, res) => {
  *                      example: "01"
  *                  display_id:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  external_reference_id:
  *                      type: string
  *                      example: "4"
@@ -3689,7 +3976,7 @@ router.post('/order_details/add', (req, res) => {
  *              description: New admin created successfully !!!
  */
 
-router.put('/order_details/update/:tags/:email', (req, res) => {
+router.put("/order_details/update/:tags/:email", (req, res) => {
   //Insert : Très bien koa
 
   let query = {};
@@ -3715,7 +4002,7 @@ router.put('/order_details/update/:tags/:email', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -3749,7 +4036,7 @@ router.put('/order_details/update/:tags/:email', (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.delete('/order_details/delete/:tags/:id', (req, res) => {
+router.delete("/order_details/delete/:tags/:id", (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Order_detail.deleteOne(query, function (err, obj) {
@@ -3780,7 +4067,7 @@ router.delete('/order_details/delete/:tags/:id', (req, res) => {
  *                      example: "01"
  *                  qr_code_link:
  *                      type: string
- *                      example: "https://eats-api-project.herokuapp.com/"
+ *                      example: ""
  *                  image_format:
  *                      type: string
  *                      example: "4"
@@ -3792,7 +4079,7 @@ router.delete('/order_details/delete/:tags/:id', (req, res) => {
  *              description: New QrCode created successfully !!!
  */
 
-router.post('/qrcode/add/', (req, res) => {
+router.post("/qrcode/add/", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new QrCode({
     frame_name: req.body.frame_name,
@@ -3803,7 +4090,7 @@ router.post('/qrcode/add/', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -3821,7 +4108,7 @@ router.post('/qrcode/add/', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/QrCode', (req, res) => {
+router.get("/QrCode", (req, res) => {
   //Select all users: OK
   QrCode.find((err, docs) => {
     if (!err) res.send(docs);
@@ -3858,7 +4145,7 @@ router.get('/QrCode', (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.get('/qrcode/:tags/:id', (req, res) => {
+router.get("/qrcode/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -3895,7 +4182,7 @@ router.get('/qrcode/:tags/:id', (req, res) => {
  *              properties:
  *                  frame_name:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  qr_code_link:
  *                      type: string
  *                      example: "4"
@@ -3910,7 +4197,7 @@ router.get('/qrcode/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/qrcode/update/:tags/:email', (req, res) => {
+router.put("/qrcode/update/:tags/:email", (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
@@ -3930,7 +4217,7 @@ router.put('/qrcode/update/:tags/:email', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -3965,10 +4252,10 @@ router.put('/qrcode/update/:tags/:email', (req, res) => {
  *      '404':
  *          description: QrCode not found
  */
-router.delete('/qrcode/delete/:tags/:id', (req, res) => {
+router.delete("/qrcode/delete/:tags/:id", (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
-  Admin.deleteMany(query, function (err, obj) {
+  Admin.deleteOne(query, function (err, obj) {
     if (err) throw err;
     res.send(
       `The table with the e-mail : ${req.params.id} has been deleted from the database.`
@@ -3998,13 +4285,13 @@ router.delete('/qrcode/delete/:tags/:id', (req, res) => {
  *                      example: "01"
  *                  venue_api_key_id:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *      responses:
  *          '200':
  *              description: New venue created successfully !!!
  */
 
-router.post('/venue/add/', (req, res) => {
+router.post("/venue/add/", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Venue({
     venue_code_id: req.body.venue_code_id,
@@ -4013,7 +4300,7 @@ router.post('/venue/add/', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -4031,7 +4318,7 @@ router.post('/venue/add/', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/Venue', (req, res) => {
+router.get("/Venue", (req, res) => {
   //Select all users: OK
   Venue.find((err, docs) => {
     if (!err) res.send(docs);
@@ -4068,7 +4355,7 @@ router.get('/Venue', (req, res) => {
  *      '404':
  *          description: Venue not found
  */
-router.get('/venue/:tags/:id', (req, res) => {
+router.get("/venue/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -4105,7 +4392,7 @@ router.get('/venue/:tags/:id', (req, res) => {
  *              properties:
  *                  venue_code_id:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  venue_api_key_id:
  *                      type: string
  *                      example: "4"
@@ -4114,13 +4401,13 @@ router.get('/venue/:tags/:id', (req, res) => {
  *              description: Information updated successfully !!!
  */
 
-router.put('/venue/update/:email', (req, res) => {
+router.put("/venue/update/:email", (req, res) => {
   // Update : De mbola très bien koa
   //  if(!ObjectID.isValid(req.params.id))
   //     return res.status(400).send("ID Unknown : " + req.params.id);
 
   let query = {};
-  query['venue_code_id'] = req.params.email;
+  query["venue_code_id"] = req.params.email;
 
   const updateRecord = {
     venue_api_key_id: req.body.venue_api_key_id,
@@ -4132,7 +4419,7 @@ router.put('/venue/update/:email', (req, res) => {
     { new: true },
     (err, docs) => {
       if (!err) res.send(docs);
-      else console.log('Update error : ' + err);
+      else console.log("Update error : " + err);
     }
   );
 });
@@ -4167,7 +4454,7 @@ router.put('/venue/update/:email', (req, res) => {
  *      '404':
  *          description: Venue not found
  */
-router.delete('/qrcode/delete/:tags/:id', (req, res) => {
+router.delete("/qrcode/delete/:tags/:id", (req, res) => {
   let query = {};
   query[req.params.tags] = req.params.id;
   Venue.deleteOne(query, function (err, obj) {
@@ -4185,7 +4472,7 @@ router.delete('/qrcode/delete/:tags/:id', (req, res) => {
  * /review/add/:
  *    post:
  *      tags: [Review]
- *      summary: Add a new review by
+ *      summary: Add a new review by store
  *      security:
  *          - ApiKeyAuth: []
  *      parameters:
@@ -4200,31 +4487,31 @@ router.delete('/qrcode/delete/:tags/:id', (req, res) => {
  *                      example: "01"
  *                  first_name:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  last_name:
  *                      type: string
  *                      example: "01"
  *                  email:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  phone_number:
  *                      type: string
  *                      example: "01"
  *                  rating:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *                  rating_rate:
  *                      type: string
  *                      example: "01"
  *                  date_of_birth:
  *                      type: string
- *                      example: "Rancard"
+ *                      example: ""
  *      responses:
  *          '200':
  *              description: New review added successfully !!!
  */
 
-router.post('/review/add/', (req, res) => {
+router.post("/review/add/", (req, res) => {
   //Insert : Très bien koa
   const newRecord = new Review({
     store_id: req.body.store_id,
@@ -4239,7 +4526,7 @@ router.post('/review/add/', (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.log('Error sending new data : ' + err);
+    else console.log("Error sending new data : " + err);
   });
 });
 
@@ -4257,7 +4544,7 @@ router.post('/review/add/', (req, res) => {
  *      '200':
  *          description : A successful response
  */
-router.get('/Review', (req, res) => {
+router.get("/Review", (req, res) => {
   //Select all users: OK
   Review.find((err, docs) => {
     if (!err) res.send(docs);
@@ -4294,7 +4581,7 @@ router.get('/Review', (req, res) => {
  *      '404':
  *          description: Review do not exist
  */
-router.get('/review/:tags/:id', (req, res) => {
+router.get("/review/:tags/:id", (req, res) => {
   //Select one article : OK
   let query = {};
   query[req.params.tags] = req.params.id;
@@ -4305,7 +4592,489 @@ router.get('/review/:tags/:id', (req, res) => {
 });
 
 /*******************************************FIN ORDER*************************************************** */
+/******************************************* PAYMENT ************************************************/
 
+/**
+ * @swagger
+ * /payment/add/:
+ *    post:
+ *      tags: [Payment]
+ *      summary: Add a new table
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: requestBody
+ *            description: request body
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      example: "01"
+ *                  partner_store_id:
+ *                      type: string
+ *                      example: "01"
+ *                  store_id:
+ *                      type: string
+ *                      example: "01"
+ *                  payments:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                             partner_payment_id:
+ *                                  type: String
+ *                                  example: ""
+ *                             amount:
+ *                                  type: String
+ *                                  example: ""
+ *                             tips:
+ *                                  type: String
+ *                                  example: ""
+ *                             currency_code:
+ *                                  type: String
+ *                                  example: ""
+ *                             placed_at:
+ *                                  type: String
+ *                                  example: ""
+ *                             cart:
+ *                                  type: object
+ *                                  properties:
+ *                                      items:
+ *                                          type: array
+ *                                          properties:
+ *                                          items:
+ *                                              type: object
+ *                                              properties:
+ *                                                  id:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  instance_id:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  title:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  external_data:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  quantity:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  price:
+ *                                                      type: object
+ *                                                      properties:
+ *                                                          unit_price:
+ *                                                              type: object
+ *                                                              properties:
+ *                                                                  amount:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                                  currency_code:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                                  formatted_amount:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                          return_status:
+ *                                                              type: string
+ *                                                              example: ""
+ *                                                          refund_eater_id:
+ *                                                              type: array
+ *                                                              properties:
+ *                                                              items:
+ *                                                                  type: object
+ *                                                                  properties:
+ *                                                                      partner_refund_id:
+ *                                                                          type: String
+ *                                                                          example: ""
+ *                                                                      partner_payment_id:
+ *                                                                          type: String
+ *                                                                          example: ""
+ *                                                                      cart:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              items:
+ *                                                                                  type: array
+ *                                                                                  items:
+ *                                                                                      type: object
+ *                                                                                      properties:
+ *                                                                                           id:
+ *                                                                                               type: string
+ *                                                                                               example: "IT001"
+ *                                                                                           instance_id:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           title:
+ *                                                                                               type: string
+ *                                                                                               example: "IT001"
+ *                                                                                           external_data:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           quantity:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           price:
+ *                                                                                               type: object
+ *                                                                                               properties:
+ *                                                                                                   unit_price:
+ *                                                                                                       type: object
+ *                                                                                                       properties:
+ *                                                                                                           amount:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           currency_code:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           formatted_amount:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                   description:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   reason:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   reason_code:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   amount:
+ *                                                                                                       type: object
+ *                                                                                                       properties:
+ *                                                                                                           value:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           currency:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                   placed_at:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   closed_at:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *
+ *      responses:
+ *          '200':
+ *              description: Payment added successfully !!!
+ */
+
+router.post("/payment/add", (req, res) => {
+  //Insert : Très bien koa
+  const newRecord = new Payment({
+    id: req.body.id,
+    partner_store_id: req.body.partner_store_id,
+    store_id: req.body.store_id,
+    payments: req.body.payments,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error sending new data : " + err);
+  });
+});
+
+/**
+ *  @swagger
+ * paths:
+ *  /payment:
+ *   get:
+ *    tags: [Payment]
+ *    summary : List all payments
+ *    security:
+ *      - ApiKeyAuth: []
+ *    description: Fetch the list of payments
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ */
+router.get("/table", (req, res) => {
+  //Select all users: OK
+  Payment.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ *  /payment/{Field name}/{info}:
+ *   get:
+ *    tags: [Payment]
+ *    summary : Find payment by info
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Return a single element
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id","partner_store_id","store_id"]
+ *       required: true
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       required: true
+ *       schema:
+ *         type: integer
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid ID
+ *      '404':
+ *          description: Payment not found
+ */
+router.get("/payment/:tags/:id", (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Payment.find(query, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ * /payment/Update/{Field value}/{id}:
+ *    put:
+ *      tags: [Payment]
+ *      summary: Update an admin
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["table_id","table_name"]
+ *            required: true
+ *          - name: id
+ *            description: ID or name of the table
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove all fields that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  partner_store_id:
+ *                      type: string
+ *                      example: "01"
+ *                  store_id:
+ *                      type: string
+ *                      example: "01"
+ *                  payments:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                             partner_payment_id:
+ *                                  type: String
+ *                                  example: ""
+ *                             amount:
+ *                                  type: String
+ *                                  example: ""
+ *                             tips:
+ *                                  type: String
+ *                                  example: ""
+ *                             currency_code:
+ *                                  type: String
+ *                                  example: ""
+ *                             placed_at:
+ *                                  type: String
+ *                                  example: ""
+ *                             cart:
+ *                                  type: object
+ *                                  properties:
+ *                                      items:
+ *                                          type: array
+ *                                          properties:
+ *                                          items:
+ *                                              type: object
+ *                                              properties:
+ *                                                  id:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  instance_id:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  title:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  external_data:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  quantity:
+ *                                                      type: String
+ *                                                      example: ""
+ *                                                  price:
+ *                                                      type: object
+ *                                                      properties:
+ *                                                          unit_price:
+ *                                                              type: object
+ *                                                              properties:
+ *                                                                  amount:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                                  currency_code:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                                  formatted_amount:
+ *                                                                      type: String
+ *                                                                      example: ""
+ *                                                          return_status:
+ *                                                              type: string
+ *                                                              example: ""
+ *                                                          refund_eater_id:
+ *                                                              type: array
+ *                                                              properties:
+ *                                                              items:
+ *                                                                  type: object
+ *                                                                  properties:
+ *                                                                      partner_refund_id:
+ *                                                                          type: String
+ *                                                                          example: ""
+ *                                                                      partner_payment_id:
+ *                                                                          type: String
+ *                                                                          example: ""
+ *                                                                      cart:
+ *                                                                          type: object
+ *                                                                          properties:
+ *                                                                              items:
+ *                                                                                  type: array
+ *                                                                                  items:
+ *                                                                                      type: object
+ *                                                                                      properties:
+ *                                                                                           id:
+ *                                                                                               type: string
+ *                                                                                               example: "IT001"
+ *                                                                                           instance_id:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           title:
+ *                                                                                               type: string
+ *                                                                                               example: "IT001"
+ *                                                                                           external_data:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           quantity:
+ *                                                                                               type: string
+ *                                                                                               example: "1"
+ *                                                                                           price:
+ *                                                                                               type: object
+ *                                                                                               properties:
+ *                                                                                                   unit_price:
+ *                                                                                                       type: object
+ *                                                                                                       properties:
+ *                                                                                                           amount:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           currency_code:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           formatted_amount:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                   description:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   reason:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   reason_code:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   amount:
+ *                                                                                                       type: object
+ *                                                                                                       properties:
+ *                                                                                                           value:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                           currency:
+ *                                                                                                               type: string
+ *                                                                                                               example: ""
+ *                                                                                                   placed_at:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *                                                                                                   closed_at:
+ *                                                                                                       type: string
+ *                                                                                                       example: ""
+ *
+ *      responses:
+ *          '200':
+ *              description: Payment added successfully !!!
+ */
+
+router.put("/payment/update/:tags/:email", (req, res) => {
+  // Update : De mbola très bien koa
+  //  if(!ObjectID.isValid(req.params.id))
+  //     return res.status(400).send("ID Unknown : " + req.params.id);
+
+  let query = {};
+  query[req.params.tags] = req.params.email;
+
+  const updateRecord = {
+    partner_store_id: req.body.partner_store_id,
+    store_id: req.body.store_id,
+    payments: req.body.payments,
+  };
+
+  Payment.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log("Update error : " + err);
+    }
+  );
+});
+
+/**
+ * @swagger
+ *  /payment/delete/{Field name}/{info}:
+ *   delete:
+ *    tags: [Payment]
+ *    summary : Remove a payment
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Remove a table
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id","partner_store_id","store_id"]
+ *       required: true
+ *       schema:
+ *         type: string
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: Info of the payment to remove
+ *       required: true
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid info
+ *      '404':
+ *          description: Payment not found
+ */
+router.delete("/payment/delete/:tags/:id", (req, res) => {
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Payment.deleteOne(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The payment with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
+    );
+  });
+});
+/*********************************** PAYMENT ************************** */
 /**
  * @swagger
  * securityShemes:
