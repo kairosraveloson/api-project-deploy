@@ -3275,6 +3275,9 @@ router.get("/order_details/list", (req, res) => {
  *                          store_id:
  *                              type: string
  *                              example: "00:00"
+ *                          partner_store_id:
+ *                              type: string
+ *                              example: "10"
  *                          partner_table_id:
  *                              type: string
  *                              example: "10"
