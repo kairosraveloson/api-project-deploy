@@ -17,6 +17,7 @@ const { Venue } = require("../models/Venue");
 const { Review } = require("../models/Review");
 const { Payment } = require("../models/Payment");
 const { Menu } = require("../models/Menu");
+const { Option } = require("../models/Option");
 //const { Order_detail } = require("../models/Order_detail");
 
 const { Order } = require("../models/Order");
@@ -5075,6 +5076,231 @@ router.delete("/payment/delete/:tags/:id", (req, res) => {
   });
 });
 /*********************************** PAYMENT ************************** */
+/*********************************** OPTIONS ************************** */
+/**
+ * @swagger
+ * /option/add/:
+ *    post:
+ *      tags: [Option]
+ *      summary: Add a new option
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: requestBody
+ *            description: request body
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      example: ""
+ *                  item_principal:
+ *                      type: string
+ *                      example: ""
+ *                  options_items:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                             id:
+ *                                  type: String
+ *                                  example: ""
+ *                             quantity:
+ *                                  type: String
+ *                                  example: ""
+ *      responses:
+ *          '200':
+ *              description: New option created successfully !!!
+ *          '400':
+ *              description: Invalid ID
+ */
+
+router.post("/option/add", (req, res) => {
+  //Insert : Très bien koa
+  const newRecord = new Option({
+    id: req.body.id,
+    item_principal: req.body.item_principal,
+    options_items: req.body.options_items,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error sending new data : " + err);
+  });
+});
+
+/**
+ *  @swagger
+ * paths:
+ *  /option:
+ *   get:
+ *    tags: [Option]
+ *    summary : List all options
+ *    security:
+ *       - ApiKeyAuth: []
+ *    description: Fetch the list of options
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid ID
+ *      '404':
+ *          description: Category not found
+ */
+router.get("/option", (req, res) => {
+  //Select all categories: OK
+  Option.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ *  /option/{Field name}/{info}:
+ *   get:
+ *    tags: [Option]
+ *    summary : Find option by info
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Return a single element
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id","item_principal"]
+ *       required: true
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: Info of the option
+ *       required: true
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid info
+ *      '404':
+ *          description: Option not found
+ */
+router.get("/option/:tags/:id", (req, res) => {
+  //Select one article : OK
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Option.find(query, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log("Error : couldn't retrieve data " + err);
+  });
+});
+
+/**
+ * @swagger
+ * /option/Update/{Field value}/{info}:
+ *    put:
+ *      tags: [Option]
+ *      summary: Update option info
+ *      security:
+ *          - ApiKeyAuth: []
+ *      parameters:
+ *          - name: Field value
+ *            in: path
+ *            type: string
+ *            enum: ["id","item_principal"]
+ *            required: true
+ *          - name: info
+ *            description: Info of the tax
+ *            in: path
+ *            type: string
+ *            required: true
+ *          - name: requestBody
+ *            description: Remove the field that are not concerned by the change
+ *            in: body
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  item_principal:
+ *                      type: string
+ *                      example: ""
+ *                  options_items:
+ *                      type: array
+ *                      items:
+ *                          type: object
+ *                          properties:
+ *                             id:
+ *                                  type: String
+ *                                  example: ""
+ *                             quantity:
+ *                                  type: String
+ *                                  example: ""
+ *      responses:
+ *          '200':
+ *              description: Information updated successfully !!!
+ */
+
+router.put("/option/update/:tags/:mail", (req, res) => {
+  // Update : De mbola très bien koa
+
+  let query = {};
+  query[req.params.tags] = req.params.mail;
+
+  const updateRecord = {
+    id: req.body.id,
+    options_items: req.body.options_items,
+  };
+
+  Option.findOneAndUpdate(
+    query,
+    { $set: updateRecord },
+    { new: true },
+    (err, docs) => {
+      if (!err) res.send(docs);
+      else console.log("Update error : " + err);
+    }
+  );
+});
+
+/**
+ * @swagger
+ *  /option/delete/{Field name}/{info}:
+ *   delete:
+ *    tags: [Option]
+ *    summary : Remove an option
+ *    security:
+ *     - ApiKeyAuth: []
+ *    description: Remove an option
+ *    parameters:
+ *     - name: Field name
+ *       in: path
+ *       type: string
+ *       enum: ["id","item_principal"]
+ *       required: true
+ *       schema:
+ *         type: string
+ *     - name: info
+ *       in: path
+ *       type: string
+ *       description: Info of the tax
+ *       required: true
+ *    responses:
+ *      '200':
+ *          description : A successful response
+ *      '400':
+ *          description: Invalid info
+ *      '404':
+ *          description: Option not found
+ */
+router.delete("/option/delete/:tags/:id", (req, res) => {
+  // Delete : Ok
+  let query = {};
+  query[req.params.tags] = req.params.id;
+  Option.deleteOne(query, function (err, obj) {
+    if (err) throw err;
+    res.send(
+      `The category with the ${req.params.tags} : ${req.params.id} has been deleted from the database.`
+    );
+  });
+});
 /**
  * @swagger
  * securityShemes:
